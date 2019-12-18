@@ -18,6 +18,9 @@ class upload extends Controller
     //
     public function index(Request $request){
 
+        //phpinfo();
+        //die;
+
         if ($request->hasFile('photo')) {
             $image      = $request->file('photo');
             $fileName   = 'test' . '.' . $image->getClientOriginalExtension();
@@ -83,8 +86,6 @@ class upload extends Controller
      */
     protected function saveFile(UploadedFile $file)
     {
-        //echo memory_get_usage(true) . "\n";
-
         $size = $file->getSize();
         $fileName = $this->createFilename($file);
         // Group files by mime type
@@ -94,18 +95,10 @@ class upload extends Controller
         $filePath = "images/{$mime}/tmp/{$fileName}";
         $realPrivatePath = $file->getRealPath();
         $img = Image::make($realPrivatePath);
-
-        echo $this->convert(memory_get_usage(true)) . "\n";
-
-        $img->stream('jpg', 10);
-
-        echo $this->convert(memory_get_usage(true)) . "\n";
-
+        $img->stream('jpg', 60);
 
         if(Storage::disk('public')->put($filePath, $img)){
-
-            echo $this->convert(memory_get_usage(true)) . "\n";
-        
+            unset($img);
             if( unlink($realPrivatePath) ){
                 die;
                 return response()->json([
@@ -136,6 +129,7 @@ class upload extends Controller
 
     protected function convert($size)
     {
+        //echo $this->convert(memory_get_usage(true)) . "\n";
         $unit=array('b','kb','mb','gb','tb','pb');
         return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
     }
