@@ -1829,6 +1829,1075 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/exif-js/exif.js":
+/*!**************************************!*\
+  !*** ./node_modules/exif-js/exif.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
+
+    var debug = false;
+
+    var root = this;
+
+    var EXIF = function(obj) {
+        if (obj instanceof EXIF) return obj;
+        if (!(this instanceof EXIF)) return new EXIF(obj);
+        this.EXIFwrapped = obj;
+    };
+
+    if (true) {
+        if ( true && module.exports) {
+            exports = module.exports = EXIF;
+        }
+        exports.EXIF = EXIF;
+    } else {}
+
+    var ExifTags = EXIF.Tags = {
+
+        // version tags
+        0x9000 : "ExifVersion",             // EXIF version
+        0xA000 : "FlashpixVersion",         // Flashpix format version
+
+        // colorspace tags
+        0xA001 : "ColorSpace",              // Color space information tag
+
+        // image configuration
+        0xA002 : "PixelXDimension",         // Valid width of meaningful image
+        0xA003 : "PixelYDimension",         // Valid height of meaningful image
+        0x9101 : "ComponentsConfiguration", // Information about channels
+        0x9102 : "CompressedBitsPerPixel",  // Compressed bits per pixel
+
+        // user information
+        0x927C : "MakerNote",               // Any desired information written by the manufacturer
+        0x9286 : "UserComment",             // Comments by user
+
+        // related file
+        0xA004 : "RelatedSoundFile",        // Name of related sound file
+
+        // date and time
+        0x9003 : "DateTimeOriginal",        // Date and time when the original image was generated
+        0x9004 : "DateTimeDigitized",       // Date and time when the image was stored digitally
+        0x9290 : "SubsecTime",              // Fractions of seconds for DateTime
+        0x9291 : "SubsecTimeOriginal",      // Fractions of seconds for DateTimeOriginal
+        0x9292 : "SubsecTimeDigitized",     // Fractions of seconds for DateTimeDigitized
+
+        // picture-taking conditions
+        0x829A : "ExposureTime",            // Exposure time (in seconds)
+        0x829D : "FNumber",                 // F number
+        0x8822 : "ExposureProgram",         // Exposure program
+        0x8824 : "SpectralSensitivity",     // Spectral sensitivity
+        0x8827 : "ISOSpeedRatings",         // ISO speed rating
+        0x8828 : "OECF",                    // Optoelectric conversion factor
+        0x9201 : "ShutterSpeedValue",       // Shutter speed
+        0x9202 : "ApertureValue",           // Lens aperture
+        0x9203 : "BrightnessValue",         // Value of brightness
+        0x9204 : "ExposureBias",            // Exposure bias
+        0x9205 : "MaxApertureValue",        // Smallest F number of lens
+        0x9206 : "SubjectDistance",         // Distance to subject in meters
+        0x9207 : "MeteringMode",            // Metering mode
+        0x9208 : "LightSource",             // Kind of light source
+        0x9209 : "Flash",                   // Flash status
+        0x9214 : "SubjectArea",             // Location and area of main subject
+        0x920A : "FocalLength",             // Focal length of the lens in mm
+        0xA20B : "FlashEnergy",             // Strobe energy in BCPS
+        0xA20C : "SpatialFrequencyResponse",    //
+        0xA20E : "FocalPlaneXResolution",   // Number of pixels in width direction per FocalPlaneResolutionUnit
+        0xA20F : "FocalPlaneYResolution",   // Number of pixels in height direction per FocalPlaneResolutionUnit
+        0xA210 : "FocalPlaneResolutionUnit",    // Unit for measuring FocalPlaneXResolution and FocalPlaneYResolution
+        0xA214 : "SubjectLocation",         // Location of subject in image
+        0xA215 : "ExposureIndex",           // Exposure index selected on camera
+        0xA217 : "SensingMethod",           // Image sensor type
+        0xA300 : "FileSource",              // Image source (3 == DSC)
+        0xA301 : "SceneType",               // Scene type (1 == directly photographed)
+        0xA302 : "CFAPattern",              // Color filter array geometric pattern
+        0xA401 : "CustomRendered",          // Special processing
+        0xA402 : "ExposureMode",            // Exposure mode
+        0xA403 : "WhiteBalance",            // 1 = auto white balance, 2 = manual
+        0xA404 : "DigitalZoomRation",       // Digital zoom ratio
+        0xA405 : "FocalLengthIn35mmFilm",   // Equivalent foacl length assuming 35mm film camera (in mm)
+        0xA406 : "SceneCaptureType",        // Type of scene
+        0xA407 : "GainControl",             // Degree of overall image gain adjustment
+        0xA408 : "Contrast",                // Direction of contrast processing applied by camera
+        0xA409 : "Saturation",              // Direction of saturation processing applied by camera
+        0xA40A : "Sharpness",               // Direction of sharpness processing applied by camera
+        0xA40B : "DeviceSettingDescription",    //
+        0xA40C : "SubjectDistanceRange",    // Distance to subject
+
+        // other tags
+        0xA005 : "InteroperabilityIFDPointer",
+        0xA420 : "ImageUniqueID"            // Identifier assigned uniquely to each image
+    };
+
+    var TiffTags = EXIF.TiffTags = {
+        0x0100 : "ImageWidth",
+        0x0101 : "ImageHeight",
+        0x8769 : "ExifIFDPointer",
+        0x8825 : "GPSInfoIFDPointer",
+        0xA005 : "InteroperabilityIFDPointer",
+        0x0102 : "BitsPerSample",
+        0x0103 : "Compression",
+        0x0106 : "PhotometricInterpretation",
+        0x0112 : "Orientation",
+        0x0115 : "SamplesPerPixel",
+        0x011C : "PlanarConfiguration",
+        0x0212 : "YCbCrSubSampling",
+        0x0213 : "YCbCrPositioning",
+        0x011A : "XResolution",
+        0x011B : "YResolution",
+        0x0128 : "ResolutionUnit",
+        0x0111 : "StripOffsets",
+        0x0116 : "RowsPerStrip",
+        0x0117 : "StripByteCounts",
+        0x0201 : "JPEGInterchangeFormat",
+        0x0202 : "JPEGInterchangeFormatLength",
+        0x012D : "TransferFunction",
+        0x013E : "WhitePoint",
+        0x013F : "PrimaryChromaticities",
+        0x0211 : "YCbCrCoefficients",
+        0x0214 : "ReferenceBlackWhite",
+        0x0132 : "DateTime",
+        0x010E : "ImageDescription",
+        0x010F : "Make",
+        0x0110 : "Model",
+        0x0131 : "Software",
+        0x013B : "Artist",
+        0x8298 : "Copyright"
+    };
+
+    var GPSTags = EXIF.GPSTags = {
+        0x0000 : "GPSVersionID",
+        0x0001 : "GPSLatitudeRef",
+        0x0002 : "GPSLatitude",
+        0x0003 : "GPSLongitudeRef",
+        0x0004 : "GPSLongitude",
+        0x0005 : "GPSAltitudeRef",
+        0x0006 : "GPSAltitude",
+        0x0007 : "GPSTimeStamp",
+        0x0008 : "GPSSatellites",
+        0x0009 : "GPSStatus",
+        0x000A : "GPSMeasureMode",
+        0x000B : "GPSDOP",
+        0x000C : "GPSSpeedRef",
+        0x000D : "GPSSpeed",
+        0x000E : "GPSTrackRef",
+        0x000F : "GPSTrack",
+        0x0010 : "GPSImgDirectionRef",
+        0x0011 : "GPSImgDirection",
+        0x0012 : "GPSMapDatum",
+        0x0013 : "GPSDestLatitudeRef",
+        0x0014 : "GPSDestLatitude",
+        0x0015 : "GPSDestLongitudeRef",
+        0x0016 : "GPSDestLongitude",
+        0x0017 : "GPSDestBearingRef",
+        0x0018 : "GPSDestBearing",
+        0x0019 : "GPSDestDistanceRef",
+        0x001A : "GPSDestDistance",
+        0x001B : "GPSProcessingMethod",
+        0x001C : "GPSAreaInformation",
+        0x001D : "GPSDateStamp",
+        0x001E : "GPSDifferential"
+    };
+
+     // EXIF 2.3 Spec
+    var IFD1Tags = EXIF.IFD1Tags = {
+        0x0100: "ImageWidth",
+        0x0101: "ImageHeight",
+        0x0102: "BitsPerSample",
+        0x0103: "Compression",
+        0x0106: "PhotometricInterpretation",
+        0x0111: "StripOffsets",
+        0x0112: "Orientation",
+        0x0115: "SamplesPerPixel",
+        0x0116: "RowsPerStrip",
+        0x0117: "StripByteCounts",
+        0x011A: "XResolution",
+        0x011B: "YResolution",
+        0x011C: "PlanarConfiguration",
+        0x0128: "ResolutionUnit",
+        0x0201: "JpegIFOffset",    // When image format is JPEG, this value show offset to JPEG data stored.(aka "ThumbnailOffset" or "JPEGInterchangeFormat")
+        0x0202: "JpegIFByteCount", // When image format is JPEG, this value shows data size of JPEG image (aka "ThumbnailLength" or "JPEGInterchangeFormatLength")
+        0x0211: "YCbCrCoefficients",
+        0x0212: "YCbCrSubSampling",
+        0x0213: "YCbCrPositioning",
+        0x0214: "ReferenceBlackWhite"
+    };
+
+    var StringValues = EXIF.StringValues = {
+        ExposureProgram : {
+            0 : "Not defined",
+            1 : "Manual",
+            2 : "Normal program",
+            3 : "Aperture priority",
+            4 : "Shutter priority",
+            5 : "Creative program",
+            6 : "Action program",
+            7 : "Portrait mode",
+            8 : "Landscape mode"
+        },
+        MeteringMode : {
+            0 : "Unknown",
+            1 : "Average",
+            2 : "CenterWeightedAverage",
+            3 : "Spot",
+            4 : "MultiSpot",
+            5 : "Pattern",
+            6 : "Partial",
+            255 : "Other"
+        },
+        LightSource : {
+            0 : "Unknown",
+            1 : "Daylight",
+            2 : "Fluorescent",
+            3 : "Tungsten (incandescent light)",
+            4 : "Flash",
+            9 : "Fine weather",
+            10 : "Cloudy weather",
+            11 : "Shade",
+            12 : "Daylight fluorescent (D 5700 - 7100K)",
+            13 : "Day white fluorescent (N 4600 - 5400K)",
+            14 : "Cool white fluorescent (W 3900 - 4500K)",
+            15 : "White fluorescent (WW 3200 - 3700K)",
+            17 : "Standard light A",
+            18 : "Standard light B",
+            19 : "Standard light C",
+            20 : "D55",
+            21 : "D65",
+            22 : "D75",
+            23 : "D50",
+            24 : "ISO studio tungsten",
+            255 : "Other"
+        },
+        Flash : {
+            0x0000 : "Flash did not fire",
+            0x0001 : "Flash fired",
+            0x0005 : "Strobe return light not detected",
+            0x0007 : "Strobe return light detected",
+            0x0009 : "Flash fired, compulsory flash mode",
+            0x000D : "Flash fired, compulsory flash mode, return light not detected",
+            0x000F : "Flash fired, compulsory flash mode, return light detected",
+            0x0010 : "Flash did not fire, compulsory flash mode",
+            0x0018 : "Flash did not fire, auto mode",
+            0x0019 : "Flash fired, auto mode",
+            0x001D : "Flash fired, auto mode, return light not detected",
+            0x001F : "Flash fired, auto mode, return light detected",
+            0x0020 : "No flash function",
+            0x0041 : "Flash fired, red-eye reduction mode",
+            0x0045 : "Flash fired, red-eye reduction mode, return light not detected",
+            0x0047 : "Flash fired, red-eye reduction mode, return light detected",
+            0x0049 : "Flash fired, compulsory flash mode, red-eye reduction mode",
+            0x004D : "Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected",
+            0x004F : "Flash fired, compulsory flash mode, red-eye reduction mode, return light detected",
+            0x0059 : "Flash fired, auto mode, red-eye reduction mode",
+            0x005D : "Flash fired, auto mode, return light not detected, red-eye reduction mode",
+            0x005F : "Flash fired, auto mode, return light detected, red-eye reduction mode"
+        },
+        SensingMethod : {
+            1 : "Not defined",
+            2 : "One-chip color area sensor",
+            3 : "Two-chip color area sensor",
+            4 : "Three-chip color area sensor",
+            5 : "Color sequential area sensor",
+            7 : "Trilinear sensor",
+            8 : "Color sequential linear sensor"
+        },
+        SceneCaptureType : {
+            0 : "Standard",
+            1 : "Landscape",
+            2 : "Portrait",
+            3 : "Night scene"
+        },
+        SceneType : {
+            1 : "Directly photographed"
+        },
+        CustomRendered : {
+            0 : "Normal process",
+            1 : "Custom process"
+        },
+        WhiteBalance : {
+            0 : "Auto white balance",
+            1 : "Manual white balance"
+        },
+        GainControl : {
+            0 : "None",
+            1 : "Low gain up",
+            2 : "High gain up",
+            3 : "Low gain down",
+            4 : "High gain down"
+        },
+        Contrast : {
+            0 : "Normal",
+            1 : "Soft",
+            2 : "Hard"
+        },
+        Saturation : {
+            0 : "Normal",
+            1 : "Low saturation",
+            2 : "High saturation"
+        },
+        Sharpness : {
+            0 : "Normal",
+            1 : "Soft",
+            2 : "Hard"
+        },
+        SubjectDistanceRange : {
+            0 : "Unknown",
+            1 : "Macro",
+            2 : "Close view",
+            3 : "Distant view"
+        },
+        FileSource : {
+            3 : "DSC"
+        },
+
+        Components : {
+            0 : "",
+            1 : "Y",
+            2 : "Cb",
+            3 : "Cr",
+            4 : "R",
+            5 : "G",
+            6 : "B"
+        }
+    };
+
+    function addEvent(element, event, handler) {
+        if (element.addEventListener) {
+            element.addEventListener(event, handler, false);
+        } else if (element.attachEvent) {
+            element.attachEvent("on" + event, handler);
+        }
+    }
+
+    function imageHasData(img) {
+        return !!(img.exifdata);
+    }
+
+
+    function base64ToArrayBuffer(base64, contentType) {
+        contentType = contentType || base64.match(/^data\:([^\;]+)\;base64,/mi)[1] || ''; // e.g. 'data:image/jpeg;base64,...' => 'image/jpeg'
+        base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
+        var binary = atob(base64);
+        var len = binary.length;
+        var buffer = new ArrayBuffer(len);
+        var view = new Uint8Array(buffer);
+        for (var i = 0; i < len; i++) {
+            view[i] = binary.charCodeAt(i);
+        }
+        return buffer;
+    }
+
+    function objectURLToBlob(url, callback) {
+        var http = new XMLHttpRequest();
+        http.open("GET", url, true);
+        http.responseType = "blob";
+        http.onload = function(e) {
+            if (this.status == 200 || this.status === 0) {
+                callback(this.response);
+            }
+        };
+        http.send();
+    }
+
+    function getImageData(img, callback) {
+        function handleBinaryFile(binFile) {
+            var data = findEXIFinJPEG(binFile);
+            img.exifdata = data || {};
+            var iptcdata = findIPTCinJPEG(binFile);
+            img.iptcdata = iptcdata || {};
+            if (EXIF.isXmpEnabled) {
+               var xmpdata= findXMPinJPEG(binFile);
+               img.xmpdata = xmpdata || {};               
+            }
+            if (callback) {
+                callback.call(img);
+            }
+        }
+
+        if (img.src) {
+            if (/^data\:/i.test(img.src)) { // Data URI
+                var arrayBuffer = base64ToArrayBuffer(img.src);
+                handleBinaryFile(arrayBuffer);
+
+            } else if (/^blob\:/i.test(img.src)) { // Object URL
+                var fileReader = new FileReader();
+                fileReader.onload = function(e) {
+                    handleBinaryFile(e.target.result);
+                };
+                objectURLToBlob(img.src, function (blob) {
+                    fileReader.readAsArrayBuffer(blob);
+                });
+            } else {
+                var http = new XMLHttpRequest();
+                http.onload = function() {
+                    if (this.status == 200 || this.status === 0) {
+                        handleBinaryFile(http.response);
+                    } else {
+                        throw "Could not load image";
+                    }
+                    http = null;
+                };
+                http.open("GET", img.src, true);
+                http.responseType = "arraybuffer";
+                http.send(null);
+            }
+        } else if (self.FileReader && (img instanceof self.Blob || img instanceof self.File)) {
+            var fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                if (debug) console.log("Got file of length " + e.target.result.byteLength);
+                handleBinaryFile(e.target.result);
+            };
+
+            fileReader.readAsArrayBuffer(img);
+        }
+    }
+
+    function findEXIFinJPEG(file) {
+        var dataView = new DataView(file);
+
+        if (debug) console.log("Got file of length " + file.byteLength);
+        if ((dataView.getUint8(0) != 0xFF) || (dataView.getUint8(1) != 0xD8)) {
+            if (debug) console.log("Not a valid JPEG");
+            return false; // not a valid jpeg
+        }
+
+        var offset = 2,
+            length = file.byteLength,
+            marker;
+
+        while (offset < length) {
+            if (dataView.getUint8(offset) != 0xFF) {
+                if (debug) console.log("Not a valid marker at offset " + offset + ", found: " + dataView.getUint8(offset));
+                return false; // not a valid marker, something is wrong
+            }
+
+            marker = dataView.getUint8(offset + 1);
+            if (debug) console.log(marker);
+
+            // we could implement handling for other markers here,
+            // but we're only looking for 0xFFE1 for EXIF data
+
+            if (marker == 225) {
+                if (debug) console.log("Found 0xFFE1 marker");
+
+                return readEXIFData(dataView, offset + 4, dataView.getUint16(offset + 2) - 2);
+
+                // offset += 2 + file.getShortAt(offset+2, true);
+
+            } else {
+                offset += 2 + dataView.getUint16(offset+2);
+            }
+
+        }
+
+    }
+
+    function findIPTCinJPEG(file) {
+        var dataView = new DataView(file);
+
+        if (debug) console.log("Got file of length " + file.byteLength);
+        if ((dataView.getUint8(0) != 0xFF) || (dataView.getUint8(1) != 0xD8)) {
+            if (debug) console.log("Not a valid JPEG");
+            return false; // not a valid jpeg
+        }
+
+        var offset = 2,
+            length = file.byteLength;
+
+
+        var isFieldSegmentStart = function(dataView, offset){
+            return (
+                dataView.getUint8(offset) === 0x38 &&
+                dataView.getUint8(offset+1) === 0x42 &&
+                dataView.getUint8(offset+2) === 0x49 &&
+                dataView.getUint8(offset+3) === 0x4D &&
+                dataView.getUint8(offset+4) === 0x04 &&
+                dataView.getUint8(offset+5) === 0x04
+            );
+        };
+
+        while (offset < length) {
+
+            if ( isFieldSegmentStart(dataView, offset )){
+
+                // Get the length of the name header (which is padded to an even number of bytes)
+                var nameHeaderLength = dataView.getUint8(offset+7);
+                if(nameHeaderLength % 2 !== 0) nameHeaderLength += 1;
+                // Check for pre photoshop 6 format
+                if(nameHeaderLength === 0) {
+                    // Always 4
+                    nameHeaderLength = 4;
+                }
+
+                var startOffset = offset + 8 + nameHeaderLength;
+                var sectionLength = dataView.getUint16(offset + 6 + nameHeaderLength);
+
+                return readIPTCData(file, startOffset, sectionLength);
+
+                break;
+
+            }
+
+
+            // Not the marker, continue searching
+            offset++;
+
+        }
+
+    }
+    var IptcFieldMap = {
+        0x78 : 'caption',
+        0x6E : 'credit',
+        0x19 : 'keywords',
+        0x37 : 'dateCreated',
+        0x50 : 'byline',
+        0x55 : 'bylineTitle',
+        0x7A : 'captionWriter',
+        0x69 : 'headline',
+        0x74 : 'copyright',
+        0x0F : 'category'
+    };
+    function readIPTCData(file, startOffset, sectionLength){
+        var dataView = new DataView(file);
+        var data = {};
+        var fieldValue, fieldName, dataSize, segmentType, segmentSize;
+        var segmentStartPos = startOffset;
+        while(segmentStartPos < startOffset+sectionLength) {
+            if(dataView.getUint8(segmentStartPos) === 0x1C && dataView.getUint8(segmentStartPos+1) === 0x02){
+                segmentType = dataView.getUint8(segmentStartPos+2);
+                if(segmentType in IptcFieldMap) {
+                    dataSize = dataView.getInt16(segmentStartPos+3);
+                    segmentSize = dataSize + 5;
+                    fieldName = IptcFieldMap[segmentType];
+                    fieldValue = getStringFromDB(dataView, segmentStartPos+5, dataSize);
+                    // Check if we already stored a value with this name
+                    if(data.hasOwnProperty(fieldName)) {
+                        // Value already stored with this name, create multivalue field
+                        if(data[fieldName] instanceof Array) {
+                            data[fieldName].push(fieldValue);
+                        }
+                        else {
+                            data[fieldName] = [data[fieldName], fieldValue];
+                        }
+                    }
+                    else {
+                        data[fieldName] = fieldValue;
+                    }
+                }
+
+            }
+            segmentStartPos++;
+        }
+        return data;
+    }
+
+
+
+    function readTags(file, tiffStart, dirStart, strings, bigEnd) {
+        var entries = file.getUint16(dirStart, !bigEnd),
+            tags = {},
+            entryOffset, tag,
+            i;
+
+        for (i=0;i<entries;i++) {
+            entryOffset = dirStart + i*12 + 2;
+            tag = strings[file.getUint16(entryOffset, !bigEnd)];
+            if (!tag && debug) console.log("Unknown tag: " + file.getUint16(entryOffset, !bigEnd));
+            tags[tag] = readTagValue(file, entryOffset, tiffStart, dirStart, bigEnd);
+        }
+        return tags;
+    }
+
+
+    function readTagValue(file, entryOffset, tiffStart, dirStart, bigEnd) {
+        var type = file.getUint16(entryOffset+2, !bigEnd),
+            numValues = file.getUint32(entryOffset+4, !bigEnd),
+            valueOffset = file.getUint32(entryOffset+8, !bigEnd) + tiffStart,
+            offset,
+            vals, val, n,
+            numerator, denominator;
+
+        switch (type) {
+            case 1: // byte, 8-bit unsigned int
+            case 7: // undefined, 8-bit byte, value depending on field
+                if (numValues == 1) {
+                    return file.getUint8(entryOffset + 8, !bigEnd);
+                } else {
+                    offset = numValues > 4 ? valueOffset : (entryOffset + 8);
+                    vals = [];
+                    for (n=0;n<numValues;n++) {
+                        vals[n] = file.getUint8(offset + n);
+                    }
+                    return vals;
+                }
+
+            case 2: // ascii, 8-bit byte
+                offset = numValues > 4 ? valueOffset : (entryOffset + 8);
+                return getStringFromDB(file, offset, numValues-1);
+
+            case 3: // short, 16 bit int
+                if (numValues == 1) {
+                    return file.getUint16(entryOffset + 8, !bigEnd);
+                } else {
+                    offset = numValues > 2 ? valueOffset : (entryOffset + 8);
+                    vals = [];
+                    for (n=0;n<numValues;n++) {
+                        vals[n] = file.getUint16(offset + 2*n, !bigEnd);
+                    }
+                    return vals;
+                }
+
+            case 4: // long, 32 bit int
+                if (numValues == 1) {
+                    return file.getUint32(entryOffset + 8, !bigEnd);
+                } else {
+                    vals = [];
+                    for (n=0;n<numValues;n++) {
+                        vals[n] = file.getUint32(valueOffset + 4*n, !bigEnd);
+                    }
+                    return vals;
+                }
+
+            case 5:    // rational = two long values, first is numerator, second is denominator
+                if (numValues == 1) {
+                    numerator = file.getUint32(valueOffset, !bigEnd);
+                    denominator = file.getUint32(valueOffset+4, !bigEnd);
+                    val = new Number(numerator / denominator);
+                    val.numerator = numerator;
+                    val.denominator = denominator;
+                    return val;
+                } else {
+                    vals = [];
+                    for (n=0;n<numValues;n++) {
+                        numerator = file.getUint32(valueOffset + 8*n, !bigEnd);
+                        denominator = file.getUint32(valueOffset+4 + 8*n, !bigEnd);
+                        vals[n] = new Number(numerator / denominator);
+                        vals[n].numerator = numerator;
+                        vals[n].denominator = denominator;
+                    }
+                    return vals;
+                }
+
+            case 9: // slong, 32 bit signed int
+                if (numValues == 1) {
+                    return file.getInt32(entryOffset + 8, !bigEnd);
+                } else {
+                    vals = [];
+                    for (n=0;n<numValues;n++) {
+                        vals[n] = file.getInt32(valueOffset + 4*n, !bigEnd);
+                    }
+                    return vals;
+                }
+
+            case 10: // signed rational, two slongs, first is numerator, second is denominator
+                if (numValues == 1) {
+                    return file.getInt32(valueOffset, !bigEnd) / file.getInt32(valueOffset+4, !bigEnd);
+                } else {
+                    vals = [];
+                    for (n=0;n<numValues;n++) {
+                        vals[n] = file.getInt32(valueOffset + 8*n, !bigEnd) / file.getInt32(valueOffset+4 + 8*n, !bigEnd);
+                    }
+                    return vals;
+                }
+        }
+    }
+
+    /**
+    * Given an IFD (Image File Directory) start offset
+    * returns an offset to next IFD or 0 if it's the last IFD.
+    */
+    function getNextIFDOffset(dataView, dirStart, bigEnd){
+        //the first 2bytes means the number of directory entries contains in this IFD
+        var entries = dataView.getUint16(dirStart, !bigEnd);
+
+        // After last directory entry, there is a 4bytes of data,
+        // it means an offset to next IFD.
+        // If its value is '0x00000000', it means this is the last IFD and there is no linked IFD.
+
+        return dataView.getUint32(dirStart + 2 + entries * 12, !bigEnd); // each entry is 12 bytes long
+    }
+
+    function readThumbnailImage(dataView, tiffStart, firstIFDOffset, bigEnd){
+        // get the IFD1 offset
+        var IFD1OffsetPointer = getNextIFDOffset(dataView, tiffStart+firstIFDOffset, bigEnd);
+
+        if (!IFD1OffsetPointer) {
+            // console.log('******** IFD1Offset is empty, image thumb not found ********');
+            return {};
+        }
+        else if (IFD1OffsetPointer > dataView.byteLength) { // this should not happen
+            // console.log('******** IFD1Offset is outside the bounds of the DataView ********');
+            return {};
+        }
+        // console.log('*******  thumbnail IFD offset (IFD1) is: %s', IFD1OffsetPointer);
+
+        var thumbTags = readTags(dataView, tiffStart, tiffStart + IFD1OffsetPointer, IFD1Tags, bigEnd)
+
+        // EXIF 2.3 specification for JPEG format thumbnail
+
+        // If the value of Compression(0x0103) Tag in IFD1 is '6', thumbnail image format is JPEG.
+        // Most of Exif image uses JPEG format for thumbnail. In that case, you can get offset of thumbnail
+        // by JpegIFOffset(0x0201) Tag in IFD1, size of thumbnail by JpegIFByteCount(0x0202) Tag.
+        // Data format is ordinary JPEG format, starts from 0xFFD8 and ends by 0xFFD9. It seems that
+        // JPEG format and 160x120pixels of size are recommended thumbnail format for Exif2.1 or later.
+
+        if (thumbTags['Compression']) {
+            // console.log('Thumbnail image found!');
+
+            switch (thumbTags['Compression']) {
+                case 6:
+                    // console.log('Thumbnail image format is JPEG');
+                    if (thumbTags.JpegIFOffset && thumbTags.JpegIFByteCount) {
+                    // extract the thumbnail
+                        var tOffset = tiffStart + thumbTags.JpegIFOffset;
+                        var tLength = thumbTags.JpegIFByteCount;
+                        thumbTags['blob'] = new Blob([new Uint8Array(dataView.buffer, tOffset, tLength)], {
+                            type: 'image/jpeg'
+                        });
+                    }
+                break;
+
+            case 1:
+                console.log("Thumbnail image format is TIFF, which is not implemented.");
+                break;
+            default:
+                console.log("Unknown thumbnail image format '%s'", thumbTags['Compression']);
+            }
+        }
+        else if (thumbTags['PhotometricInterpretation'] == 2) {
+            console.log("Thumbnail image format is RGB, which is not implemented.");
+        }
+        return thumbTags;
+    }
+
+    function getStringFromDB(buffer, start, length) {
+        var outstr = "";
+        for (n = start; n < start+length; n++) {
+            outstr += String.fromCharCode(buffer.getUint8(n));
+        }
+        return outstr;
+    }
+
+    function readEXIFData(file, start) {
+        if (getStringFromDB(file, start, 4) != "Exif") {
+            if (debug) console.log("Not valid EXIF data! " + getStringFromDB(file, start, 4));
+            return false;
+        }
+
+        var bigEnd,
+            tags, tag,
+            exifData, gpsData,
+            tiffOffset = start + 6;
+
+        // test for TIFF validity and endianness
+        if (file.getUint16(tiffOffset) == 0x4949) {
+            bigEnd = false;
+        } else if (file.getUint16(tiffOffset) == 0x4D4D) {
+            bigEnd = true;
+        } else {
+            if (debug) console.log("Not valid TIFF data! (no 0x4949 or 0x4D4D)");
+            return false;
+        }
+
+        if (file.getUint16(tiffOffset+2, !bigEnd) != 0x002A) {
+            if (debug) console.log("Not valid TIFF data! (no 0x002A)");
+            return false;
+        }
+
+        var firstIFDOffset = file.getUint32(tiffOffset+4, !bigEnd);
+
+        if (firstIFDOffset < 0x00000008) {
+            if (debug) console.log("Not valid TIFF data! (First offset less than 8)", file.getUint32(tiffOffset+4, !bigEnd));
+            return false;
+        }
+
+        tags = readTags(file, tiffOffset, tiffOffset + firstIFDOffset, TiffTags, bigEnd);
+
+        if (tags.ExifIFDPointer) {
+            exifData = readTags(file, tiffOffset, tiffOffset + tags.ExifIFDPointer, ExifTags, bigEnd);
+            for (tag in exifData) {
+                switch (tag) {
+                    case "LightSource" :
+                    case "Flash" :
+                    case "MeteringMode" :
+                    case "ExposureProgram" :
+                    case "SensingMethod" :
+                    case "SceneCaptureType" :
+                    case "SceneType" :
+                    case "CustomRendered" :
+                    case "WhiteBalance" :
+                    case "GainControl" :
+                    case "Contrast" :
+                    case "Saturation" :
+                    case "Sharpness" :
+                    case "SubjectDistanceRange" :
+                    case "FileSource" :
+                        exifData[tag] = StringValues[tag][exifData[tag]];
+                        break;
+
+                    case "ExifVersion" :
+                    case "FlashpixVersion" :
+                        exifData[tag] = String.fromCharCode(exifData[tag][0], exifData[tag][1], exifData[tag][2], exifData[tag][3]);
+                        break;
+
+                    case "ComponentsConfiguration" :
+                        exifData[tag] =
+                            StringValues.Components[exifData[tag][0]] +
+                            StringValues.Components[exifData[tag][1]] +
+                            StringValues.Components[exifData[tag][2]] +
+                            StringValues.Components[exifData[tag][3]];
+                        break;
+                }
+                tags[tag] = exifData[tag];
+            }
+        }
+
+        if (tags.GPSInfoIFDPointer) {
+            gpsData = readTags(file, tiffOffset, tiffOffset + tags.GPSInfoIFDPointer, GPSTags, bigEnd);
+            for (tag in gpsData) {
+                switch (tag) {
+                    case "GPSVersionID" :
+                        gpsData[tag] = gpsData[tag][0] +
+                            "." + gpsData[tag][1] +
+                            "." + gpsData[tag][2] +
+                            "." + gpsData[tag][3];
+                        break;
+                }
+                tags[tag] = gpsData[tag];
+            }
+        }
+
+        // extract thumbnail
+        tags['thumbnail'] = readThumbnailImage(file, tiffOffset, firstIFDOffset, bigEnd);
+
+        return tags;
+    }
+
+   function findXMPinJPEG(file) {
+
+        if (!('DOMParser' in self)) {
+            // console.warn('XML parsing not supported without DOMParser');
+            return;
+        }
+        var dataView = new DataView(file);
+
+        if (debug) console.log("Got file of length " + file.byteLength);
+        if ((dataView.getUint8(0) != 0xFF) || (dataView.getUint8(1) != 0xD8)) {
+           if (debug) console.log("Not a valid JPEG");
+           return false; // not a valid jpeg
+        }
+
+        var offset = 2,
+            length = file.byteLength,
+            dom = new DOMParser();
+
+        while (offset < (length-4)) {
+            if (getStringFromDB(dataView, offset, 4) == "http") {
+                var startOffset = offset - 1;
+                var sectionLength = dataView.getUint16(offset - 2) - 1;
+                var xmpString = getStringFromDB(dataView, startOffset, sectionLength)
+                var xmpEndIndex = xmpString.indexOf('xmpmeta>') + 8;
+                xmpString = xmpString.substring( xmpString.indexOf( '<x:xmpmeta' ), xmpEndIndex );
+
+                var indexOfXmp = xmpString.indexOf('x:xmpmeta') + 10
+                //Many custom written programs embed xmp/xml without any namespace. Following are some of them.
+                //Without these namespaces, XML is thought to be invalid by parsers
+                xmpString = xmpString.slice(0, indexOfXmp)
+                            + 'xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/" '
+                            + 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+                            + 'xmlns:tiff="http://ns.adobe.com/tiff/1.0/" '
+                            + 'xmlns:plus="http://schemas.android.com/apk/lib/com.google.android.gms.plus" '
+                            + 'xmlns:ext="http://www.gettyimages.com/xsltExtension/1.0" '
+                            + 'xmlns:exif="http://ns.adobe.com/exif/1.0/" '
+                            + 'xmlns:stEvt="http://ns.adobe.com/xap/1.0/sType/ResourceEvent#" '
+                            + 'xmlns:stRef="http://ns.adobe.com/xap/1.0/sType/ResourceRef#" '
+                            + 'xmlns:crs="http://ns.adobe.com/camera-raw-settings/1.0/" '
+                            + 'xmlns:xapGImg="http://ns.adobe.com/xap/1.0/g/img/" '
+                            + 'xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/" '
+                            + xmpString.slice(indexOfXmp)
+
+                var domDocument = dom.parseFromString( xmpString, 'text/xml' );
+                return xml2Object(domDocument);
+            } else{
+             offset++;
+            }
+        }
+    }
+
+    function xml2json(xml) {
+        var json = {};
+      
+        if (xml.nodeType == 1) { // element node
+          if (xml.attributes.length > 0) {
+            json['@attributes'] = {};
+            for (var j = 0; j < xml.attributes.length; j++) {
+              var attribute = xml.attributes.item(j);
+              json['@attributes'][attribute.nodeName] = attribute.nodeValue;
+            }
+          }
+        } else if (xml.nodeType == 3) { // text node
+          return xml.nodeValue;
+        }
+      
+        // deal with children
+        if (xml.hasChildNodes()) {
+          for(var i = 0; i < xml.childNodes.length; i++) {
+            var child = xml.childNodes.item(i);
+            var nodeName = child.nodeName;
+            if (json[nodeName] == null) {
+              json[nodeName] = xml2json(child);
+            } else {
+              if (json[nodeName].push == null) {
+                var old = json[nodeName];
+                json[nodeName] = [];
+                json[nodeName].push(old);
+              }
+              json[nodeName].push(xml2json(child));
+            }
+          }
+        }
+        
+        return json;
+    }
+
+    function xml2Object(xml) {
+        try {
+            var obj = {};
+            if (xml.children.length > 0) {
+              for (var i = 0; i < xml.children.length; i++) {
+                var item = xml.children.item(i);
+                var attributes = item.attributes;
+                for(var idx in attributes) {
+                    var itemAtt = attributes[idx];
+                    var dataKey = itemAtt.nodeName;
+                    var dataValue = itemAtt.nodeValue;
+
+                    if(dataKey !== undefined) {
+                        obj[dataKey] = dataValue;
+                    }
+                }
+                var nodeName = item.nodeName;
+
+                if (typeof (obj[nodeName]) == "undefined") {
+                  obj[nodeName] = xml2json(item);
+                } else {
+                  if (typeof (obj[nodeName].push) == "undefined") {
+                    var old = obj[nodeName];
+
+                    obj[nodeName] = [];
+                    obj[nodeName].push(old);
+                  }
+                  obj[nodeName].push(xml2json(item));
+                }
+              }
+            } else {
+              obj = xml.textContent;
+            }
+            return obj;
+          } catch (e) {
+              console.log(e.message);
+          }
+    }
+
+    EXIF.enableXmp = function() {
+        EXIF.isXmpEnabled = true;
+    }
+
+    EXIF.disableXmp = function() {
+        EXIF.isXmpEnabled = false;
+    }
+
+    EXIF.getData = function(img, callback) {
+        if (((self.Image && img instanceof self.Image)
+            || (self.HTMLImageElement && img instanceof self.HTMLImageElement))
+            && !img.complete)
+            return false;
+
+        if (!imageHasData(img)) {
+            getImageData(img, callback);
+        } else {
+            if (callback) {
+                callback.call(img);
+            }
+        }
+        return true;
+    }
+
+    EXIF.getTag = function(img, tag) {
+        if (!imageHasData(img)) return;
+        return img.exifdata[tag];
+    }
+    
+    EXIF.getIptcTag = function(img, tag) {
+        if (!imageHasData(img)) return;
+        return img.iptcdata[tag];
+    }
+
+    EXIF.getAllTags = function(img) {
+        if (!imageHasData(img)) return {};
+        var a,
+            data = img.exifdata,
+            tags = {};
+        for (a in data) {
+            if (data.hasOwnProperty(a)) {
+                tags[a] = data[a];
+            }
+        }
+        return tags;
+    }
+    
+    EXIF.getAllIptcTags = function(img) {
+        if (!imageHasData(img)) return {};
+        var a,
+            data = img.iptcdata,
+            tags = {};
+        for (a in data) {
+            if (data.hasOwnProperty(a)) {
+                tags[a] = data[a];
+            }
+        }
+        return tags;
+    }
+
+    EXIF.pretty = function(img) {
+        if (!imageHasData(img)) return "";
+        var a,
+            data = img.exifdata,
+            strPretty = "";
+        for (a in data) {
+            if (data.hasOwnProperty(a)) {
+                if (typeof data[a] == "object") {
+                    if (data[a] instanceof Number) {
+                        strPretty += a + " : " + data[a] + " [" + data[a].numerator + "/" + data[a].denominator + "]\r\n";
+                    } else {
+                        strPretty += a + " : [" + data[a].length + " values]\r\n";
+                    }
+                } else {
+                    strPretty += a + " : " + data[a] + "\r\n";
+                }
+            }
+        }
+        return strPretty;
+    }
+
+    EXIF.readFromBinaryFile = function(file) {
+        return findEXIFinJPEG(file);
+    }
+
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+            return EXIF;
+        }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    }
+}.call(this));
+
+
+
+/***/ }),
+
 /***/ "./node_modules/is-buffer/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/is-buffer/index.js ***!
@@ -19235,6 +20304,8 @@ module.exports = function(module) {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+__webpack_require__(/*! ./custom */ "./resources/js/custom.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -19266,6 +20337,1360 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/custom.js":
+/*!********************************!*\
+  !*** ./resources/js/custom.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Resumable = __webpack_require__(/*! ./resumable */ "./resources/js/resumable.js");
+
+var EXIF = __webpack_require__(/*! exif-js */ "./node_modules/exif-js/exif.js");
+
+(function () {
+  var base64ToArrayBuffer = function base64ToArrayBuffer(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+
+      reader.onload = function () {
+        resolve(new Uint8Array(reader.result));
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  var r = new Resumable({
+    target: "{{url('/resumable')}}",
+    chunkSize: 1 * 1024 * 1024,
+    testChunks: false,
+    simultaneousUploads: 1,
+    headers: {
+      'X-CSRF-Token': "{{ csrf_token() }}"
+    },
+    query: {
+      _token: "{{ csrf_token() }}"
+    }
+  });
+  r.assignBrowse(document.getElementById('browseButton'));
+  r.on('fileSuccess', function (file) {
+    console.debug('fileSuccess', file);
+  });
+  r.on('fileProgress', function (file) {
+    console.debug('fileProgress', file);
+  });
+  r.on('fileAdded', function (file, event) {
+    //r.upload();
+    EXIF.getData(file.file, function () {
+      var make = EXIF.getTag(this, "Make");
+      var model = EXIF.getTag(this, "Model");
+      var exifData = EXIF.getAllTags(this);
+      console.log(exifData);
+    });
+    console.debug('fileAdded', event);
+  });
+  r.on('filesAdded', function (array) {
+    //r.upload();
+    console.debug('filesAdded', array);
+  });
+  r.on('fileRetry', function (file) {
+    console.debug('fileRetry', file);
+  });
+  r.on('fileError', function (file, message) {
+    console.debug('fileError', file, message);
+  });
+  r.on('uploadStart', function () {
+    console.debug('uploadStart');
+  });
+  r.on('complete', function () {
+    console.debug('complete');
+  });
+  r.on('progress', function () {
+    console.debug('progress');
+  });
+  r.on('error', function (message, file) {
+    console.debug('error', message, file);
+  });
+  r.on('pause', function () {
+    console.debug('pause');
+  });
+  r.on('cancel', function () {
+    console.debug('cancel');
+  });
+})();
+
+/***/ }),
+
+/***/ "./resources/js/resumable.js":
+/*!***********************************!*\
+  !*** ./resources/js/resumable.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+* MIT Licensed
+* http://www.23developer.com/opensource
+* http://github.com/23/resumable.js
+* Steffen Tiedemann Christensen, steffen@23company.com
+*/
+(function () {
+  "use strict";
+
+  var Resumable = function Resumable(opts) {
+    if (!(this instanceof Resumable)) {
+      return new Resumable(opts);
+    }
+
+    this.version = 1.0; // SUPPORTED BY BROWSER?
+    // Check if these features are support by the browser:
+    // - File object type
+    // - Blob object type
+    // - FileList object type
+    // - slicing files
+
+    this.support = typeof File !== 'undefined' && typeof Blob !== 'undefined' && typeof FileList !== 'undefined' && (!!Blob.prototype.webkitSlice || !!Blob.prototype.mozSlice || !!Blob.prototype.slice || false);
+    if (!this.support) return false; // PROPERTIES
+
+    var $ = this;
+    $.files = [];
+    $.defaults = {
+      chunkSize: 1 * 1024 * 1024,
+      forceChunkSize: false,
+      simultaneousUploads: 3,
+      fileParameterName: 'file',
+      chunkNumberParameterName: 'resumableChunkNumber',
+      chunkSizeParameterName: 'resumableChunkSize',
+      currentChunkSizeParameterName: 'resumableCurrentChunkSize',
+      totalSizeParameterName: 'resumableTotalSize',
+      typeParameterName: 'resumableType',
+      identifierParameterName: 'resumableIdentifier',
+      fileNameParameterName: 'resumableFilename',
+      relativePathParameterName: 'resumableRelativePath',
+      totalChunksParameterName: 'resumableTotalChunks',
+      dragOverClass: 'dragover',
+      throttleProgressCallbacks: 0.5,
+      query: {},
+      headers: {},
+      preprocess: null,
+      preprocessFile: null,
+      method: 'multipart',
+      uploadMethod: 'POST',
+      testMethod: 'GET',
+      prioritizeFirstAndLastChunk: false,
+      target: '/',
+      testTarget: null,
+      parameterNamespace: '',
+      testChunks: true,
+      generateUniqueIdentifier: null,
+      getTarget: null,
+      maxChunkRetries: 100,
+      chunkRetryInterval: undefined,
+      permanentErrors: [400, 401, 403, 404, 409, 415, 500, 501],
+      maxFiles: undefined,
+      withCredentials: false,
+      xhrTimeout: 0,
+      clearInput: true,
+      chunkFormat: 'blob',
+      setChunkTypeFromFile: false,
+      maxFilesErrorCallback: function maxFilesErrorCallback(files, errorCount) {
+        var maxFiles = $.getOpt('maxFiles');
+        alert('Please upload no more than ' + maxFiles + ' file' + (maxFiles === 1 ? '' : 's') + ' at a time.');
+      },
+      minFileSize: 1,
+      minFileSizeErrorCallback: function minFileSizeErrorCallback(file, errorCount) {
+        alert(file.fileName || file.name + ' is too small, please upload files larger than ' + $h.formatSize($.getOpt('minFileSize')) + '.');
+      },
+      maxFileSize: undefined,
+      maxFileSizeErrorCallback: function maxFileSizeErrorCallback(file, errorCount) {
+        alert(file.fileName || file.name + ' is too large, please upload files less than ' + $h.formatSize($.getOpt('maxFileSize')) + '.');
+      },
+      fileType: [],
+      fileTypeErrorCallback: function fileTypeErrorCallback(file, errorCount) {
+        alert(file.fileName || file.name + ' has type not allowed, please upload files of type ' + $.getOpt('fileType') + '.');
+      }
+    };
+    $.opts = opts || {};
+
+    $.getOpt = function (o) {
+      var $opt = this; // Get multiple option if passed an array
+
+      if (o instanceof Array) {
+        var options = {};
+        $h.each(o, function (option) {
+          options[option] = $opt.getOpt(option);
+        });
+        return options;
+      } // Otherwise, just return a simple option
+
+
+      if ($opt instanceof ResumableChunk) {
+        if (typeof $opt.opts[o] !== 'undefined') {
+          return $opt.opts[o];
+        } else {
+          $opt = $opt.fileObj;
+        }
+      }
+
+      if ($opt instanceof ResumableFile) {
+        if (typeof $opt.opts[o] !== 'undefined') {
+          return $opt.opts[o];
+        } else {
+          $opt = $opt.resumableObj;
+        }
+      }
+
+      if ($opt instanceof Resumable) {
+        if (typeof $opt.opts[o] !== 'undefined') {
+          return $opt.opts[o];
+        } else {
+          return $opt.defaults[o];
+        }
+      }
+    };
+
+    $.indexOf = function (array, obj) {
+      if (array.indexOf) {
+        return array.indexOf(obj);
+      }
+
+      for (var i = 0; i < array.length; i++) {
+        if (array[i] === obj) {
+          return i;
+        }
+      }
+
+      return -1;
+    }; // EVENTS
+    // catchAll(event, ...)
+    // fileSuccess(file), fileProgress(file), fileAdded(file, event), filesAdded(files, filesSkipped), fileRetry(file),
+    // fileError(file, message), complete(), progress(), error(message, file), pause()
+
+
+    $.events = [];
+
+    $.on = function (event, callback) {
+      $.events.push(event.toLowerCase(), callback);
+    };
+
+    $.fire = function () {
+      // `arguments` is an object, not array, in FF, so:
+      var args = [];
+
+      for (var i = 0; i < arguments.length; i++) {
+        args.push(arguments[i]);
+      } // Find event listeners, and support pseudo-event `catchAll`
+
+
+      var event = args[0].toLowerCase();
+
+      for (var i = 0; i <= $.events.length; i += 2) {
+        if ($.events[i] == event) $.events[i + 1].apply($, args.slice(1));
+        if ($.events[i] == 'catchall') $.events[i + 1].apply(null, args);
+      }
+
+      if (event == 'fileerror') $.fire('error', args[2], args[1]);
+      if (event == 'fileprogress') $.fire('progress');
+    }; // INTERNAL HELPER METHODS (handy, but ultimately not part of uploading)
+
+
+    var $h = {
+      stopEvent: function stopEvent(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      },
+      each: function each(o, callback) {
+        if (typeof o.length !== 'undefined') {
+          for (var i = 0; i < o.length; i++) {
+            // Array or FileList
+            if (callback(o[i]) === false) return;
+          }
+        } else {
+          for (i in o) {
+            // Object
+            if (callback(i, o[i]) === false) return;
+          }
+        }
+      },
+      generateUniqueIdentifier: function generateUniqueIdentifier(file, event) {
+        var custom = $.getOpt('generateUniqueIdentifier');
+
+        if (typeof custom === 'function') {
+          return custom(file, event);
+        }
+
+        var relativePath = file.webkitRelativePath || file.relativePath || file.fileName || file.name; // Some confusion in different versions of Firefox
+
+        var size = file.size;
+        return size + '-' + relativePath.replace(/[^0-9a-zA-Z_-]/img, '');
+      },
+      contains: function contains(array, test) {
+        var result = false;
+        $h.each(array, function (value) {
+          if (value == test) {
+            result = true;
+            return false;
+          }
+
+          return true;
+        });
+        return result;
+      },
+      formatSize: function formatSize(size) {
+        if (size < 1024) {
+          return size + ' bytes';
+        } else if (size < 1024 * 1024) {
+          return (size / 1024.0).toFixed(0) + ' KB';
+        } else if (size < 1024 * 1024 * 1024) {
+          return (size / 1024.0 / 1024.0).toFixed(1) + ' MB';
+        } else {
+          return (size / 1024.0 / 1024.0 / 1024.0).toFixed(1) + ' GB';
+        }
+      },
+      getTarget: function getTarget(request, params) {
+        var target = $.getOpt('target');
+
+        if (request === 'test' && $.getOpt('testTarget')) {
+          target = $.getOpt('testTarget') === '/' ? $.getOpt('target') : $.getOpt('testTarget');
+        }
+
+        if (typeof target === 'function') {
+          return target(params);
+        }
+
+        var separator = target.indexOf('?') < 0 ? '?' : '&';
+        var joinedParams = params.join('&');
+        if (joinedParams) target = target + separator + joinedParams;
+        return target;
+      }
+    };
+
+    var onDrop = function onDrop(e) {
+      e.currentTarget.classList.remove($.getOpt('dragOverClass'));
+      $h.stopEvent(e); //handle dropped things as items if we can (this lets us deal with folders nicer in some cases)
+
+      if (e.dataTransfer && e.dataTransfer.items) {
+        loadFiles(e.dataTransfer.items, e);
+      } //else handle them as files
+      else if (e.dataTransfer && e.dataTransfer.files) {
+          loadFiles(e.dataTransfer.files, e);
+        }
+    };
+
+    var onDragLeave = function onDragLeave(e) {
+      e.currentTarget.classList.remove($.getOpt('dragOverClass'));
+    };
+
+    var onDragOverEnter = function onDragOverEnter(e) {
+      e.preventDefault();
+      var dt = e.dataTransfer;
+
+      if ($.indexOf(dt.types, "Files") >= 0) {
+        // only for file drop
+        e.stopPropagation();
+        dt.dropEffect = "copy";
+        dt.effectAllowed = "copy";
+        e.currentTarget.classList.add($.getOpt('dragOverClass'));
+      } else {
+        // not work on IE/Edge....
+        dt.dropEffect = "none";
+        dt.effectAllowed = "none";
+      }
+    };
+    /**
+     * processes a single upload item (file or directory)
+     * @param {Object} item item to upload, may be file or directory entry
+     * @param {string} path current file path
+     * @param {File[]} items list of files to append new items to
+     * @param {Function} cb callback invoked when item is processed
+     */
+
+
+    function processItem(item, path, items, cb) {
+      var entry;
+
+      if (item.isFile) {
+        // file provided
+        return item.file(function (file) {
+          file.relativePath = path + file.name;
+          items.push(file);
+          cb();
+        });
+      } else if (item.isDirectory) {
+        // item is already a directory entry, just assign
+        entry = item;
+      } else if (item instanceof File) {
+        items.push(item);
+      }
+
+      if ('function' === typeof item.webkitGetAsEntry) {
+        // get entry from file object
+        entry = item.webkitGetAsEntry();
+      }
+
+      if (entry && entry.isDirectory) {
+        // directory provided, process it
+        return processDirectory(entry, path + entry.name + '/', items, cb);
+      }
+
+      if ('function' === typeof item.getAsFile) {
+        // item represents a File object, convert it
+        item = item.getAsFile();
+
+        if (item instanceof File) {
+          item.relativePath = path + item.name;
+          items.push(item);
+        }
+      }
+
+      cb(); // indicate processing is done
+    }
+    /**
+     * cps-style list iteration.
+     * invokes all functions in list and waits for their callback to be
+     * triggered.
+     * @param  {Function[]}   items list of functions expecting callback parameter
+     * @param  {Function} cb    callback to trigger after the last callback has been invoked
+     */
+
+
+    function processCallbacks(items, cb) {
+      if (!items || items.length === 0) {
+        // empty or no list, invoke callback
+        return cb();
+      } // invoke current function, pass the next part as continuation
+
+
+      items[0](function () {
+        processCallbacks(items.slice(1), cb);
+      });
+    }
+    /**
+     * recursively traverse directory and collect files to upload
+     * @param  {Object}   directory directory to process
+     * @param  {string}   path      current path
+     * @param  {File[]}   items     target list of items
+     * @param  {Function} cb        callback invoked after traversing directory
+     */
+
+
+    function processDirectory(directory, path, items, cb) {
+      var dirReader = directory.createReader();
+      var allEntries = [];
+
+      function readEntries() {
+        dirReader.readEntries(function (entries) {
+          if (entries.length) {
+            allEntries = allEntries.concat(entries);
+            return readEntries();
+          } // process all conversion callbacks, finally invoke own one
+
+
+          processCallbacks(allEntries.map(function (entry) {
+            // bind all properties except for callback
+            return processItem.bind(null, entry, path, items);
+          }), cb);
+        });
+      }
+
+      readEntries();
+    }
+    /**
+     * process items to extract files to be uploaded
+     * @param  {File[]} items items to process
+     * @param  {Event} event event that led to upload
+     */
+
+
+    function loadFiles(items, event) {
+      if (!items.length) {
+        return; // nothing to do
+      }
+
+      $.fire('beforeAdd');
+      var files = [];
+      processCallbacks(Array.prototype.map.call(items, function (item) {
+        // bind all properties except for callback
+        var entry = item;
+
+        if ('function' === typeof item.webkitGetAsEntry) {
+          entry = item.webkitGetAsEntry();
+        }
+
+        return processItem.bind(null, entry, "", files);
+      }), function () {
+        if (files.length) {
+          // at least one file found
+          appendFilesFromFileList(files, event);
+        }
+      });
+    }
+
+    ;
+
+    var appendFilesFromFileList = function appendFilesFromFileList(fileList, event) {
+      // check for uploading too many files
+      var errorCount = 0;
+      var o = $.getOpt(['maxFiles', 'minFileSize', 'maxFileSize', 'maxFilesErrorCallback', 'minFileSizeErrorCallback', 'maxFileSizeErrorCallback', 'fileType', 'fileTypeErrorCallback']);
+
+      if (typeof o.maxFiles !== 'undefined' && o.maxFiles < fileList.length + $.files.length) {
+        // if single-file upload, file is already added, and trying to add 1 new file, simply replace the already-added file
+        if (o.maxFiles === 1 && $.files.length === 1 && fileList.length === 1) {
+          $.removeFile($.files[0]);
+        } else {
+          o.maxFilesErrorCallback(fileList, errorCount++);
+          return false;
+        }
+      }
+
+      var files = [],
+          filesSkipped = [],
+          remaining = fileList.length;
+
+      var decreaseReamining = function decreaseReamining() {
+        if (! --remaining) {
+          // all files processed, trigger event
+          if (!files.length && !filesSkipped.length) {
+            // no succeeded files, just skip
+            return;
+          }
+
+          window.setTimeout(function () {
+            $.fire('filesAdded', files, filesSkipped);
+          }, 0);
+        }
+      };
+
+      $h.each(fileList, function (file) {
+        var fileName = file.name;
+        var fileType = file.type; // e.g video/mp4
+
+        if (o.fileType.length > 0) {
+          var fileTypeFound = false;
+
+          for (var index in o.fileType) {
+            // For good behaviour we do some inital sanitizing. Remove spaces and lowercase all
+            o.fileType[index] = o.fileType[index].replace(/\s/g, '').toLowerCase(); // Allowing for both [extension, .extension, mime/type, mime/*]
+
+            var extension = (o.fileType[index].match(/^[^.][^/]+$/) ? '.' : '') + o.fileType[index];
+
+            if (fileName.substr(-1 * extension.length).toLowerCase() === extension || //If MIME type, check for wildcard or if extension matches the files tiletype
+            extension.indexOf('/') !== -1 && (extension.indexOf('*') !== -1 && fileType.substr(0, extension.indexOf('*')) === extension.substr(0, extension.indexOf('*')) || fileType === extension)) {
+              fileTypeFound = true;
+              break;
+            }
+          }
+
+          if (!fileTypeFound) {
+            o.fileTypeErrorCallback(file, errorCount++);
+            return true;
+          }
+        }
+
+        if (typeof o.minFileSize !== 'undefined' && file.size < o.minFileSize) {
+          o.minFileSizeErrorCallback(file, errorCount++);
+          return true;
+        }
+
+        if (typeof o.maxFileSize !== 'undefined' && file.size > o.maxFileSize) {
+          o.maxFileSizeErrorCallback(file, errorCount++);
+          return true;
+        }
+
+        function addFile(uniqueIdentifier) {
+          if (!$.getFromUniqueIdentifier(uniqueIdentifier)) {
+            (function () {
+              file.uniqueIdentifier = uniqueIdentifier;
+              var f = new ResumableFile($, file, uniqueIdentifier);
+              $.files.push(f);
+              files.push(f);
+              f.container = typeof event != 'undefined' ? event.srcElement : null;
+              window.setTimeout(function () {
+                $.fire('fileAdded', f, event);
+              }, 0);
+            })();
+          } else {
+            filesSkipped.push(file);
+          }
+
+          ;
+          decreaseReamining();
+        } // directories have size == 0
+
+
+        var uniqueIdentifier = $h.generateUniqueIdentifier(file, event);
+
+        if (uniqueIdentifier && typeof uniqueIdentifier.then === 'function') {
+          // Promise or Promise-like object provided as unique identifier
+          uniqueIdentifier.then(function (uniqueIdentifier) {
+            // unique identifier generation succeeded
+            addFile(uniqueIdentifier);
+          }, function () {
+            // unique identifier generation failed
+            // skip further processing, only decrease file count
+            decreaseReamining();
+          });
+        } else {
+          // non-Promise provided as unique identifier, process synchronously
+          addFile(uniqueIdentifier);
+        }
+      });
+    }; // INTERNAL OBJECT TYPES
+
+
+    function ResumableFile(resumableObj, file, uniqueIdentifier) {
+      var $ = this;
+      $.opts = {};
+      $.getOpt = resumableObj.getOpt;
+      $._prevProgress = 0;
+      $.resumableObj = resumableObj;
+      $.file = file;
+      $.fileName = file.fileName || file.name; // Some confusion in different versions of Firefox
+
+      $.size = file.size;
+      $.relativePath = file.relativePath || file.webkitRelativePath || $.fileName;
+      $.uniqueIdentifier = uniqueIdentifier;
+      $._pause = false;
+      $.container = '';
+      $.preprocessState = 0; // 0 = unprocessed, 1 = processing, 2 = finished
+
+      var _error = uniqueIdentifier !== undefined; // Callback when something happens within the chunk
+
+
+      var chunkEvent = function chunkEvent(event, message) {
+        // event can be 'progress', 'success', 'error' or 'retry'
+        switch (event) {
+          case 'progress':
+            $.resumableObj.fire('fileProgress', $, message);
+            break;
+
+          case 'error':
+            $.abort();
+            _error = true;
+            $.chunks = [];
+            $.resumableObj.fire('fileError', $, message);
+            break;
+
+          case 'success':
+            if (_error) return;
+            $.resumableObj.fire('fileProgress', $, message); // it's at least progress
+
+            if ($.isComplete()) {
+              $.resumableObj.fire('fileSuccess', $, message);
+            }
+
+            break;
+
+          case 'retry':
+            $.resumableObj.fire('fileRetry', $);
+            break;
+        }
+      }; // Main code to set up a file object with chunks,
+      // packaged to be able to handle retries if needed.
+
+
+      $.chunks = [];
+
+      $.abort = function () {
+        // Stop current uploads
+        var abortCount = 0;
+        $h.each($.chunks, function (c) {
+          if (c.status() == 'uploading') {
+            c.abort();
+            abortCount++;
+          }
+        });
+        if (abortCount > 0) $.resumableObj.fire('fileProgress', $);
+      };
+
+      $.cancel = function () {
+        // Reset this file to be void
+        var _chunks = $.chunks;
+        $.chunks = []; // Stop current uploads
+
+        $h.each(_chunks, function (c) {
+          if (c.status() == 'uploading') {
+            c.abort();
+            $.resumableObj.uploadNextChunk();
+          }
+        });
+        $.resumableObj.removeFile($);
+        $.resumableObj.fire('fileProgress', $);
+      };
+
+      $.retry = function () {
+        $.bootstrap();
+        var firedRetry = false;
+        $.resumableObj.on('chunkingComplete', function () {
+          if (!firedRetry) $.resumableObj.upload();
+          firedRetry = true;
+        });
+      };
+
+      $.bootstrap = function () {
+        $.abort();
+        _error = false; // Rebuild stack of chunks from file
+
+        $.chunks = [];
+        $._prevProgress = 0;
+        var round = $.getOpt('forceChunkSize') ? Math.ceil : Math.floor;
+        var maxOffset = Math.max(round($.file.size / $.getOpt('chunkSize')), 1);
+
+        for (var offset = 0; offset < maxOffset; offset++) {
+          (function (offset) {
+            window.setTimeout(function () {
+              $.chunks.push(new ResumableChunk($.resumableObj, $, offset, chunkEvent));
+              $.resumableObj.fire('chunkingProgress', $, offset / maxOffset);
+            }, 0);
+          })(offset);
+        }
+
+        window.setTimeout(function () {
+          $.resumableObj.fire('chunkingComplete', $);
+        }, 0);
+      };
+
+      $.progress = function () {
+        if (_error) return 1; // Sum up progress across everything
+
+        var ret = 0;
+        var error = false;
+        $h.each($.chunks, function (c) {
+          if (c.status() == 'error') error = true;
+          ret += c.progress(true); // get chunk progress relative to entire file
+        });
+        ret = error ? 1 : ret > 0.99999 ? 1 : ret;
+        ret = Math.max($._prevProgress, ret); // We don't want to lose percentages when an upload is paused
+
+        $._prevProgress = ret;
+        return ret;
+      };
+
+      $.isUploading = function () {
+        var uploading = false;
+        $h.each($.chunks, function (chunk) {
+          if (chunk.status() == 'uploading') {
+            uploading = true;
+            return false;
+          }
+        });
+        return uploading;
+      };
+
+      $.isComplete = function () {
+        var outstanding = false;
+
+        if ($.preprocessState === 1) {
+          return false;
+        }
+
+        $h.each($.chunks, function (chunk) {
+          var status = chunk.status();
+
+          if (status == 'pending' || status == 'uploading' || chunk.preprocessState === 1) {
+            outstanding = true;
+            return false;
+          }
+        });
+        return !outstanding;
+      };
+
+      $.pause = function (pause) {
+        if (typeof pause === 'undefined') {
+          $._pause = $._pause ? false : true;
+        } else {
+          $._pause = pause;
+        }
+      };
+
+      $.isPaused = function () {
+        return $._pause;
+      };
+
+      $.preprocessFinished = function () {
+        $.preprocessState = 2;
+        $.upload();
+      };
+
+      $.upload = function () {
+        var found = false;
+
+        if ($.isPaused() === false) {
+          var preprocess = $.getOpt('preprocessFile');
+
+          if (typeof preprocess === 'function') {
+            switch ($.preprocessState) {
+              case 0:
+                $.preprocessState = 1;
+                preprocess($);
+                return true;
+
+              case 1:
+                return true;
+
+              case 2:
+                break;
+            }
+          }
+
+          $h.each($.chunks, function (chunk) {
+            if (chunk.status() == 'pending' && chunk.preprocessState !== 1) {
+              chunk.send();
+              found = true;
+              return false;
+            }
+          });
+        }
+
+        return found;
+      };
+
+      $.markChunksCompleted = function (chunkNumber) {
+        if (!$.chunks || $.chunks.length <= chunkNumber) {
+          return;
+        }
+
+        for (var num = 0; num < chunkNumber; num++) {
+          $.chunks[num].markComplete = true;
+        }
+      }; // Bootstrap and return
+
+
+      $.resumableObj.fire('chunkingStart', $);
+      $.bootstrap();
+      return this;
+    }
+
+    function ResumableChunk(resumableObj, fileObj, offset, callback) {
+      var $ = this;
+      $.opts = {};
+      $.getOpt = resumableObj.getOpt;
+      $.resumableObj = resumableObj;
+      $.fileObj = fileObj;
+      $.fileObjSize = fileObj.size;
+      $.fileObjType = fileObj.file.type;
+      $.offset = offset;
+      $.callback = callback;
+      $.lastProgressCallback = new Date();
+      $.tested = false;
+      $.retries = 0;
+      $.pendingRetry = false;
+      $.preprocessState = 0; // 0 = unprocessed, 1 = processing, 2 = finished
+
+      $.markComplete = false; // Computed properties
+
+      var chunkSize = $.getOpt('chunkSize');
+      $.loaded = 0;
+      $.startByte = $.offset * chunkSize;
+      $.endByte = Math.min($.fileObjSize, ($.offset + 1) * chunkSize);
+
+      if ($.fileObjSize - $.endByte < chunkSize && !$.getOpt('forceChunkSize')) {
+        // The last chunk will be bigger than the chunk size, but less than 2*chunkSize
+        $.endByte = $.fileObjSize;
+      }
+
+      $.xhr = null; // test() makes a GET request without any data to see if the chunk has already been uploaded in a previous session
+
+      $.test = function () {
+        // Set up request and listen for event
+        $.xhr = new XMLHttpRequest();
+
+        var testHandler = function testHandler(e) {
+          $.tested = true;
+          var status = $.status();
+
+          if (status == 'success') {
+            $.callback(status, $.message());
+            $.resumableObj.uploadNextChunk();
+          } else {
+            $.send();
+          }
+        };
+
+        $.xhr.addEventListener('load', testHandler, false);
+        $.xhr.addEventListener('error', testHandler, false);
+        $.xhr.addEventListener('timeout', testHandler, false); // Add data from the query options
+
+        var params = [];
+        var parameterNamespace = $.getOpt('parameterNamespace');
+        var customQuery = $.getOpt('query');
+        if (typeof customQuery == 'function') customQuery = customQuery($.fileObj, $);
+        $h.each(customQuery, function (k, v) {
+          params.push([encodeURIComponent(parameterNamespace + k), encodeURIComponent(v)].join('='));
+        }); // Add extra data to identify chunk
+
+        params = params.concat([// define key/value pairs for additional parameters
+        ['chunkNumberParameterName', $.offset + 1], ['chunkSizeParameterName', $.getOpt('chunkSize')], ['currentChunkSizeParameterName', $.endByte - $.startByte], ['totalSizeParameterName', $.fileObjSize], ['typeParameterName', $.fileObjType], ['identifierParameterName', $.fileObj.uniqueIdentifier], ['fileNameParameterName', $.fileObj.fileName], ['relativePathParameterName', $.fileObj.relativePath], ['totalChunksParameterName', $.fileObj.chunks.length]].filter(function (pair) {
+          // include items that resolve to truthy values
+          // i.e. exclude false, null, undefined and empty strings
+          return $.getOpt(pair[0]);
+        }).map(function (pair) {
+          // map each key/value pair to its final form
+          return [parameterNamespace + $.getOpt(pair[0]), encodeURIComponent(pair[1])].join('=');
+        })); // Append the relevant chunk and send it
+
+        $.xhr.open($.getOpt('testMethod'), $h.getTarget('test', params));
+        $.xhr.timeout = $.getOpt('xhrTimeout');
+        $.xhr.withCredentials = $.getOpt('withCredentials'); // Add data from header options
+
+        var customHeaders = $.getOpt('headers');
+
+        if (typeof customHeaders === 'function') {
+          customHeaders = customHeaders($.fileObj, $);
+        }
+
+        $h.each(customHeaders, function (k, v) {
+          $.xhr.setRequestHeader(k, v);
+        });
+        $.xhr.send(null);
+      };
+
+      $.preprocessFinished = function () {
+        $.preprocessState = 2;
+        $.send();
+      }; // send() uploads the actual data in a POST call
+
+
+      $.send = function () {
+        var preprocess = $.getOpt('preprocess');
+
+        if (typeof preprocess === 'function') {
+          switch ($.preprocessState) {
+            case 0:
+              $.preprocessState = 1;
+              preprocess($);
+              return;
+
+            case 1:
+              return;
+
+            case 2:
+              break;
+          }
+        }
+
+        if ($.getOpt('testChunks') && !$.tested) {
+          $.test();
+          return;
+        } // Set up request and listen for event
+
+
+        $.xhr = new XMLHttpRequest(); // Progress
+
+        $.xhr.upload.addEventListener('progress', function (e) {
+          if (new Date() - $.lastProgressCallback > $.getOpt('throttleProgressCallbacks') * 1000) {
+            $.callback('progress');
+            $.lastProgressCallback = new Date();
+          }
+
+          $.loaded = e.loaded || 0;
+        }, false);
+        $.loaded = 0;
+        $.pendingRetry = false;
+        $.callback('progress'); // Done (either done, failed or retry)
+
+        var doneHandler = function doneHandler(e) {
+          var status = $.status();
+
+          if (status == 'success' || status == 'error') {
+            $.callback(status, $.message());
+            $.resumableObj.uploadNextChunk();
+          } else {
+            $.callback('retry', $.message());
+            $.abort();
+            $.retries++;
+            var retryInterval = $.getOpt('chunkRetryInterval');
+
+            if (retryInterval !== undefined) {
+              $.pendingRetry = true;
+              setTimeout($.send, retryInterval);
+            } else {
+              $.send();
+            }
+          }
+        };
+
+        $.xhr.addEventListener('load', doneHandler, false);
+        $.xhr.addEventListener('error', doneHandler, false);
+        $.xhr.addEventListener('timeout', doneHandler, false); // Set up the basic query data from Resumable
+
+        var query = [['chunkNumberParameterName', $.offset + 1], ['chunkSizeParameterName', $.getOpt('chunkSize')], ['currentChunkSizeParameterName', $.endByte - $.startByte], ['totalSizeParameterName', $.fileObjSize], ['typeParameterName', $.fileObjType], ['identifierParameterName', $.fileObj.uniqueIdentifier], ['fileNameParameterName', $.fileObj.fileName], ['relativePathParameterName', $.fileObj.relativePath], ['totalChunksParameterName', $.fileObj.chunks.length]].filter(function (pair) {
+          // include items that resolve to truthy values
+          // i.e. exclude false, null, undefined and empty strings
+          return $.getOpt(pair[0]);
+        }).reduce(function (query, pair) {
+          // assign query key/value
+          query[$.getOpt(pair[0])] = pair[1];
+          return query;
+        }, {}); // Mix in custom data
+
+        var customQuery = $.getOpt('query');
+        if (typeof customQuery == 'function') customQuery = customQuery($.fileObj, $);
+        $h.each(customQuery, function (k, v) {
+          query[k] = v;
+        });
+        var func = $.fileObj.file.slice ? 'slice' : $.fileObj.file.mozSlice ? 'mozSlice' : $.fileObj.file.webkitSlice ? 'webkitSlice' : 'slice';
+        var bytes = $.fileObj.file[func]($.startByte, $.endByte, $.getOpt('setChunkTypeFromFile') ? $.fileObj.file.type : "");
+        var data = null;
+        var params = [];
+        var parameterNamespace = $.getOpt('parameterNamespace');
+
+        if ($.getOpt('method') === 'octet') {
+          // Add data from the query options
+          data = bytes;
+          $h.each(query, function (k, v) {
+            params.push([encodeURIComponent(parameterNamespace + k), encodeURIComponent(v)].join('='));
+          });
+        } else {
+          // Add data from the query options
+          data = new FormData();
+          $h.each(query, function (k, v) {
+            data.append(parameterNamespace + k, v);
+            params.push([encodeURIComponent(parameterNamespace + k), encodeURIComponent(v)].join('='));
+          });
+
+          if ($.getOpt('chunkFormat') == 'blob') {
+            data.append(parameterNamespace + $.getOpt('fileParameterName'), bytes, $.fileObj.fileName);
+          } else if ($.getOpt('chunkFormat') == 'base64') {
+            var fr = new FileReader();
+
+            fr.onload = function (e) {
+              data.append(parameterNamespace + $.getOpt('fileParameterName'), fr.result);
+              $.xhr.send(data);
+            };
+
+            fr.readAsDataURL(bytes);
+          }
+        }
+
+        var target = $h.getTarget('upload', params);
+        var method = $.getOpt('uploadMethod');
+        $.xhr.open(method, target);
+
+        if ($.getOpt('method') === 'octet') {
+          $.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+        }
+
+        $.xhr.timeout = $.getOpt('xhrTimeout');
+        $.xhr.withCredentials = $.getOpt('withCredentials'); // Add data from header options
+
+        var customHeaders = $.getOpt('headers');
+
+        if (typeof customHeaders === 'function') {
+          customHeaders = customHeaders($.fileObj, $);
+        }
+
+        $h.each(customHeaders, function (k, v) {
+          $.xhr.setRequestHeader(k, v);
+        });
+
+        if ($.getOpt('chunkFormat') == 'blob') {
+          $.xhr.send(data);
+        }
+      };
+
+      $.abort = function () {
+        // Abort and reset
+        if ($.xhr) $.xhr.abort();
+        $.xhr = null;
+      };
+
+      $.status = function () {
+        // Returns: 'pending', 'uploading', 'success', 'error'
+        if ($.pendingRetry) {
+          // if pending retry then that's effectively the same as actively uploading,
+          // there might just be a slight delay before the retry starts
+          return 'uploading';
+        } else if ($.markComplete) {
+          return 'success';
+        } else if (!$.xhr) {
+          return 'pending';
+        } else if ($.xhr.readyState < 4) {
+          // Status is really 'OPENED', 'HEADERS_RECEIVED' or 'LOADING' - meaning that stuff is happening
+          return 'uploading';
+        } else {
+          if ($.xhr.status == 200 || $.xhr.status == 201) {
+            // HTTP 200, 201 (created)
+            return 'success';
+          } else if ($h.contains($.getOpt('permanentErrors'), $.xhr.status) || $.retries >= $.getOpt('maxChunkRetries')) {
+            // HTTP 400, 404, 409, 415, 500, 501 (permanent error)
+            return 'error';
+          } else {
+            // this should never happen, but we'll reset and queue a retry
+            // a likely case for this would be 503 service unavailable
+            $.abort();
+            return 'pending';
+          }
+        }
+      };
+
+      $.message = function () {
+        return $.xhr ? $.xhr.responseText : '';
+      };
+
+      $.progress = function (relative) {
+        if (typeof relative === 'undefined') relative = false;
+        var factor = relative ? ($.endByte - $.startByte) / $.fileObjSize : 1;
+        if ($.pendingRetry) return 0;
+        if ((!$.xhr || !$.xhr.status) && !$.markComplete) factor *= .95;
+        var s = $.status();
+
+        switch (s) {
+          case 'success':
+          case 'error':
+            return 1 * factor;
+
+          case 'pending':
+            return 0 * factor;
+
+          default:
+            return $.loaded / ($.endByte - $.startByte) * factor;
+        }
+      };
+
+      return this;
+    } // QUEUE
+
+
+    $.uploadNextChunk = function () {
+      var found = false; // In some cases (such as videos) it's really handy to upload the first
+      // and last chunk of a file quickly; this let's the server check the file's
+      // metadata and determine if there's even a point in continuing.
+
+      if ($.getOpt('prioritizeFirstAndLastChunk')) {
+        $h.each($.files, function (file) {
+          if (file.chunks.length && file.chunks[0].status() == 'pending' && file.chunks[0].preprocessState === 0) {
+            file.chunks[0].send();
+            found = true;
+            return false;
+          }
+
+          if (file.chunks.length > 1 && file.chunks[file.chunks.length - 1].status() == 'pending' && file.chunks[file.chunks.length - 1].preprocessState === 0) {
+            file.chunks[file.chunks.length - 1].send();
+            found = true;
+            return false;
+          }
+        });
+        if (found) return true;
+      } // Now, simply look for the next, best thing to upload
+
+
+      $h.each($.files, function (file) {
+        found = file.upload();
+        if (found) return false;
+      });
+      if (found) return true; // The are no more outstanding chunks to upload, check is everything is done
+
+      var outstanding = false;
+      $h.each($.files, function (file) {
+        if (!file.isComplete()) {
+          outstanding = true;
+          return false;
+        }
+      });
+
+      if (!outstanding) {
+        // All chunks have been uploaded, complete
+        $.fire('complete');
+      }
+
+      return false;
+    }; // PUBLIC METHODS FOR RESUMABLE.JS
+
+
+    $.assignBrowse = function (domNodes, isDirectory) {
+      if (typeof domNodes.length == 'undefined') domNodes = [domNodes];
+      $h.each(domNodes, function (domNode) {
+        var input;
+
+        if (domNode.tagName === 'INPUT' && domNode.type === 'file') {
+          input = domNode;
+        } else {
+          input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.style.display = 'none';
+          domNode.addEventListener('click', function () {
+            input.style.opacity = 0;
+            input.style.display = 'block';
+            input.focus();
+            input.click();
+            input.style.display = 'none';
+          }, false);
+          domNode.appendChild(input);
+        }
+
+        var maxFiles = $.getOpt('maxFiles');
+
+        if (typeof maxFiles === 'undefined' || maxFiles != 1) {
+          input.setAttribute('multiple', 'multiple');
+        } else {
+          input.removeAttribute('multiple');
+        }
+
+        if (isDirectory) {
+          input.setAttribute('webkitdirectory', 'webkitdirectory');
+        } else {
+          input.removeAttribute('webkitdirectory');
+        }
+
+        var fileTypes = $.getOpt('fileType');
+
+        if (typeof fileTypes !== 'undefined' && fileTypes.length >= 1) {
+          input.setAttribute('accept', fileTypes.map(function (e) {
+            e = e.replace(/\s/g, '').toLowerCase();
+
+            if (e.match(/^[^.][^/]+$/)) {
+              e = '.' + e;
+            }
+
+            return e;
+          }).join(','));
+        } else {
+          input.removeAttribute('accept');
+        } // When new files are added, simply append them to the overall list
+
+
+        input.addEventListener('change', function (e) {
+          appendFilesFromFileList(e.target.files, e);
+          var clearInput = $.getOpt('clearInput');
+
+          if (clearInput) {
+            e.target.value = '';
+          }
+        }, false);
+      });
+    };
+
+    $.assignDrop = function (domNodes) {
+      if (typeof domNodes.length == 'undefined') domNodes = [domNodes];
+      $h.each(domNodes, function (domNode) {
+        domNode.addEventListener('dragover', onDragOverEnter, false);
+        domNode.addEventListener('dragenter', onDragOverEnter, false);
+        domNode.addEventListener('dragleave', onDragLeave, false);
+        domNode.addEventListener('drop', onDrop, false);
+      });
+    };
+
+    $.unAssignDrop = function (domNodes) {
+      if (typeof domNodes.length == 'undefined') domNodes = [domNodes];
+      $h.each(domNodes, function (domNode) {
+        domNode.removeEventListener('dragover', onDragOverEnter);
+        domNode.removeEventListener('dragenter', onDragOverEnter);
+        domNode.removeEventListener('dragleave', onDragLeave);
+        domNode.removeEventListener('drop', onDrop);
+      });
+    };
+
+    $.isUploading = function () {
+      var uploading = false;
+      $h.each($.files, function (file) {
+        if (file.isUploading()) {
+          uploading = true;
+          return false;
+        }
+      });
+      return uploading;
+    };
+
+    $.upload = function () {
+      // Make sure we don't start too many uploads at once
+      if ($.isUploading()) return; // Kick off the queue
+
+      $.fire('uploadStart');
+
+      for (var num = 1; num <= $.getOpt('simultaneousUploads'); num++) {
+        $.uploadNextChunk();
+      }
+    };
+
+    $.pause = function () {
+      // Resume all chunks currently being uploaded
+      $h.each($.files, function (file) {
+        file.abort();
+      });
+      $.fire('pause');
+    };
+
+    $.cancel = function () {
+      $.fire('beforeCancel');
+
+      for (var i = $.files.length - 1; i >= 0; i--) {
+        $.files[i].cancel();
+      }
+
+      $.fire('cancel');
+    };
+
+    $.progress = function () {
+      var totalDone = 0;
+      var totalSize = 0; // Resume all chunks currently being uploaded
+
+      $h.each($.files, function (file) {
+        totalDone += file.progress() * file.size;
+        totalSize += file.size;
+      });
+      return totalSize > 0 ? totalDone / totalSize : 0;
+    };
+
+    $.addFile = function (file, event) {
+      appendFilesFromFileList([file], event);
+    };
+
+    $.addFiles = function (files, event) {
+      appendFilesFromFileList(files, event);
+    };
+
+    $.removeFile = function (file) {
+      for (var i = $.files.length - 1; i >= 0; i--) {
+        if ($.files[i] === file) {
+          $.files.splice(i, 1);
+        }
+      }
+    };
+
+    $.getFromUniqueIdentifier = function (uniqueIdentifier) {
+      var ret = false;
+      $h.each($.files, function (f) {
+        if (f.uniqueIdentifier == uniqueIdentifier) ret = f;
+      });
+      return ret;
+    };
+
+    $.getSize = function () {
+      var totalSize = 0;
+      $h.each($.files, function (file) {
+        totalSize += file.size;
+      });
+      return totalSize;
+    };
+
+    $.handleDropEvent = function (e) {
+      onDrop(e);
+    };
+
+    $.handleChangeEvent = function (e) {
+      appendFilesFromFileList(e.target.files, e);
+      e.target.value = '';
+    };
+
+    $.updateQuery = function (query) {
+      $.opts.query = query;
+    };
+
+    return this;
+  }; // Node.js-style export for Node and Component
+
+
+  if (true) {
+    // left here for backwards compatibility
+    module.exports = Resumable;
+    module.exports.Resumable = Resumable;
+  } else {}
+})();
 
 /***/ }),
 
