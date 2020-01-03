@@ -20352,16 +20352,23 @@ var Resumable = __webpack_require__(/*! ./resumable */ "./resources/js/resumable
 var EXIF = __webpack_require__(/*! exif-js */ "./node_modules/exif-js/exif.js");
 
 (function () {
-  var base64ToArrayBuffer = function base64ToArrayBuffer(file) {
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
+  var showFormattedEXIFData = function showFormattedEXIFData(exifData) {
+    console.log(exifData);
+    var ul = document.createElement('ul');
 
-      reader.onload = function () {
-        resolve(new Uint8Array(reader.result));
-      };
+    for (var eachData in exifData) {
+      if (exifData.hasOwnProperty(eachData)) {
+        //console.log(eachData + " -> " + exifData[eachData]);
+        var li = document.createElement('li');
+        li.addEventListener('click', this, function () {
+          console.log('sad');
+        });
+        li.appendChild(document.createTextNode(eachData + " -> " + exifData[eachData]));
+        ul.appendChild(li);
+      }
+    }
 
-      reader.readAsArrayBuffer(file);
-    });
+    document.getElementById('exifData').appendChild(ul);
   };
 
   var r = new Resumable({
@@ -20386,10 +20393,8 @@ var EXIF = __webpack_require__(/*! exif-js */ "./node_modules/exif-js/exif.js");
   r.on('fileAdded', function (file, event) {
     //r.upload();
     EXIF.getData(file.file, function () {
-      var make = EXIF.getTag(this, "Make");
-      var model = EXIF.getTag(this, "Model");
       var exifData = EXIF.getAllTags(this);
-      console.log(exifData);
+      showFormattedEXIFData(exifData);
     });
     console.debug('fileAdded', event);
   });

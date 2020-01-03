@@ -3,16 +3,25 @@ var EXIF = require('exif-js');
 
 (function(){
 
-  var base64ToArrayBuffer = function (file) {
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onload = function() {
-        resolve(new Uint8Array(reader.result));
+  var showFormattedEXIFData = function(exifData){
+    console.log(exifData)
+
+    var ul = document.createElement('ul');
+
+    for (let eachData in exifData) {
+      if (exifData.hasOwnProperty(eachData)) {
+        //console.log(eachData + " -> " + exifData[eachData]);
+        let li = document.createElement('li');
+        li.addEventListener('click', this, () => {console.log('sad')});
+        li.appendChild(document.createTextNode(eachData + " -> " + exifData[eachData]))
+        ul.appendChild(li);
       }
-      reader.readAsArrayBuffer(file);
-    });
+    }
+
+    document.getElementById('exifData').appendChild(ul);
   }
-      
+  
+
   var r = new Resumable({
     target: "{{url('/resumable')}}",
     chunkSize: 1*1024*1024,
@@ -37,11 +46,8 @@ var EXIF = require('exif-js');
   r.on('fileAdded', function(file, event){
       //r.upload();
       EXIF.getData(file.file, function() {
-        var make = EXIF.getTag(this, "Make");
-        var model = EXIF.getTag(this, "Model");
-
         var exifData = EXIF.getAllTags(this);
-        console.log(exifData)
+        showFormattedEXIFData(exifData)
       });
       console.debug('fileAdded', event);
     });
